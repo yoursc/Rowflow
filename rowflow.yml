@@ -1,0 +1,5 @@
+name: rowflow
+channels:
+  - defaults
+dependencies:
+  - python=3.9.18

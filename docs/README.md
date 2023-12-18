@@ -7,6 +7,7 @@ conda env create -f rowflow.yml
 ```
 
 ## 初期开发计划：
+* 基于Flask开发
 * 搭建简易的项目结构，可实现一键 pip install  安装
 * 添加命令行工具，可以在命令行启动主程序
 * 提供接口服务

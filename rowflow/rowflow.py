@@ -4,21 +4,23 @@
 @Author : Yoursc
 @Date   : 2023-12-14
 """
-
-# todo 导入核心模块
-
-from flask import Flask
+from flask import Flask, render_template
 from markupsafe import escape
 
 import blue_print.table
 import blue_print.view
 import blue_print.row
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='../templates')
 
 app.register_blueprint(blue_print.table.bp)
 app.register_blueprint(blue_print.view.bp)
 app.register_blueprint(blue_print.row.bp)
+
+
+@app.route('/')
+def index():
+    return render_template("index.html")
 
 
 @app.route('/canary')

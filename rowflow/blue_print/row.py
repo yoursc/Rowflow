@@ -7,7 +7,7 @@
 """
 from flask import Blueprint
 
-bp = Blueprint('row', __name__, url_prefix='/row')
+bp = Blueprint('row', __name__)
 
 
 @bp.route('/add')

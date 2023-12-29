@@ -3,21 +3,25 @@
 """
 @Author : Yoursc
 @Date   : 2023-12-14
+应用构建器
 """
-from flask import Flask, render_template
-from controller.meta import Meta
 
-import blue_print.table
-import blue_print.view
-import blue_print.row
+from flask import Flask, render_template
+
+from ExtendRegister.bp_register import register_bp
+from controller.meta import Meta
 
 
 def create_app():
-    app = Flask(__name__, template_folder='../templates')
-
-    app.register_blueprint(blue_print.table.bp)
-    app.register_blueprint(blue_print.view.bp)
-    app.register_blueprint(blue_print.row.bp)
+    # 创建实例
+    app = Flask(__name__, template_folder='./templates')
+    # 跨域
+    # 注册 CLI
+    # 注册 配置
+    # 注册 拦截器
+    # 注册 数据库
+    # 注册 蓝图
+    register_bp(app)
 
     @app.route('/')
     def index():

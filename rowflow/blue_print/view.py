@@ -15,7 +15,7 @@
 """
 from flask import Blueprint
 
-bp = Blueprint('view', __name__, url_prefix='/view')
+bp = Blueprint('view', __name__)
 
 
 @bp.route('/create')

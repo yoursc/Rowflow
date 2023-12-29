@@ -15,7 +15,7 @@
 """
 from flask import Blueprint
 
-bp = Blueprint('table', __name__, url_prefix='/table')
+bp = Blueprint('table', __name__)
 
 
 @bp.route('/getlist')

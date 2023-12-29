@@ -9,7 +9,7 @@ import os
 import datetime
 import platform
 import threading
-from rowflow import create_app
+from Application import create_app
 
 app = create_app()
 
@@ -28,14 +28,15 @@ def show():
     print('<', '-' * 66, '>')
 
 
-def main():
+def begin():
+    # TODO 启动环境判断处理
     # Linux服务器启动
     if platform.system() == 'Linux':
-        app.run()
+        app.run(debug=False)
     else:
-        app.run(debug=True)
+        app.run(debug=False)
 
 
 if __name__ == '__main__':
     show()
-    main()
+    begin()

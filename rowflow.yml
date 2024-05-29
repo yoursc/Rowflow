@@ -3,4 +3,5 @@ channels:
   - defaults
 dependencies:
   - python=3.9.18
+  - flask=3.0.3
   - flask-sqlalchemy=3.1.1

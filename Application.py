@@ -6,10 +6,10 @@
 应用构建器
 """
 
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 from ExtendRegister.bp_register import register_bp
-from controller.meta import Meta
+from controller.metadata import Metadata
 
 
 def create_app():
@@ -29,11 +29,11 @@ def create_app():
 
     @app.route('/canary')
     def canary():
-        return 'App is running now.'
+        return 'App is running now. Your method is ' + request.method
 
     @app.route('/test')
     def test():
-        m = Meta()
+        m = Metadata()
         m.get_tables()
         return ""
 

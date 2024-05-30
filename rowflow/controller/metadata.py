@@ -8,7 +8,7 @@
 import database
 
 
-class Meta(object):
+class Metadata(object):
     def __init__(self):
         self.db = database.get_connection()
 

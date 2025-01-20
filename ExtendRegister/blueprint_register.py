@@ -12,7 +12,7 @@ import blue_print.view
 import blue_print.row
 
 
-def register_bp(app: Flask):
+def register_blueprint(app: Flask):
     app.register_blueprint(blue_print.metadata.bp, url_prefix='/metadata')
     app.register_blueprint(blue_print.view.bp, url_prefix='/view')
     app.register_blueprint(blue_print.row.bp, url_prefix='/row')

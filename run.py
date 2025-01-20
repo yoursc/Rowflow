@@ -34,7 +34,7 @@ def begin():
     if platform.system() == 'Linux':
         app.run(debug=False)
     else:
-        app.run(debug=False)
+        app.run(debug=True)
 
 
 if __name__ == '__main__':

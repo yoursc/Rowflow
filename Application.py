@@ -7,25 +7,31 @@
 """
 
 from flask import Flask, render_template, request
+from ExtendRegister.config_register import register_config
+from ExtendRegister.blueprint_register import register_blueprint
+from ExtendRegister.database_register import register_database, db, sql_batch_runner
 
-from ExtendRegister.bp_register import register_bp
-from controller.metadata import Metadata
 
-
-def create_app():
+def create_app() -> Flask:
     # 创建实例
-    app = Flask(__name__, template_folder='./templates')
+    app = Flask("rowflow", template_folder='./templates')
     # 跨域
     # 注册 CLI
     # 注册 配置
+    register_config(app)
     # 注册 拦截器
     # 注册 数据库
+    register_database(app)
     # 注册 蓝图
-    register_bp(app)
+    register_blueprint(app)
 
     @app.route('/')
     def index():
         return render_template("index.html")
+
+    @app.route('/info')
+    def info():
+        return render_template("info.html")
 
     @app.route('/canary')
     def canary():
@@ -33,8 +39,9 @@ def create_app():
 
     @app.route('/test')
     def test():
-        m = Metadata()
-        m.get_tables()
+        with open('db/init.sql', 'r') as f:
+            sqls = f.read()
+            sql_batch_runner(sqls)
         return ""
 
     # todo 增加登录拦截器

@@ -9,7 +9,7 @@
 from flask import Flask, render_template, request
 from ExtendRegister.config_register import register_config
 from ExtendRegister.blueprint_register import register_blueprint
-from ExtendRegister.database_register import register_database, db, sql_batch_runner
+from ExtendRegister.database_register import register_database
 
 
 def create_app() -> Flask:
@@ -28,21 +28,6 @@ def create_app() -> Flask:
     @app.route('/')
     def index():
         return render_template("index.html")
-
-    @app.route('/info')
-    def info():
-        return render_template("info.html")
-
-    @app.route('/canary')
-    def canary():
-        return 'App is running now. Your method is ' + request.method
-
-    @app.route('/test')
-    def test():
-        with open('db/init.sql', 'r') as f:
-            sqls = f.read()
-            sql_batch_runner(sqls)
-        return ""
 
     # todo 增加登录拦截器
 

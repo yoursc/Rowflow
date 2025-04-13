@@ -13,5 +13,6 @@ class Metadata(object):
         self.db = database.get_connection()
 
     def get_tables(self):
+        db = self.db
         self.db.execute("tables")
         return ""

@@ -8,14 +8,19 @@
 
 from flask import Flask
 from configparser import ConfigParser
+import os
 
 # TODO 可指定配置文件
 
 config = ConfigParser()
-config.read('conf/default.ini')
 
 
 def register_config(app: Flask):
+    if os.path.exists('conf/dev.ini'):
+        config.read('conf/dev.ini')
+    else:
+        config.read('conf/default.ini')
+
     set_mysql(app)
 
 

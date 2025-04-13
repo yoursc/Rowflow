@@ -3,6 +3,7 @@
 """
 @Author : Yoursc
 @Date   : 2023-12-15
+本地数据库工具类
 """
 import sqlite3
 

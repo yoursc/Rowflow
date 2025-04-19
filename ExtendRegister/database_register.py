@@ -5,15 +5,17 @@
 @Date   : 2023-12-29
 数据库注册器
 """
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
+
 import re
 
 db = SQLAlchemy()
 
 
-class Sys_Config(db.Model):
+class SysConfig(db.Model):
     __tablename__ = 'sys_config'
     id = db.Column(db.Integer, primary_key=True)
     app = db.Column(db.String(100), nullable=False)
@@ -29,24 +31,7 @@ class Sys_Config(db.Model):
         return f"Sys_Config('{self.app}', '{self.k}', '{self.v}')"
 
 
-class Meta_Table(db.Model):
-    __tablename__ = 'meta_table'
-    t_uuid = db.Column(db.String(32), primary_key=True)
-    t_name = db.Column(db.String(100), nullable=False)
-    t_type = db.Column(db.String(100))
-    t_note = db.Column(db.String(100))
-
-    def __init__(self, i_uuid, i_name, i_type, i_note):
-        self.t_uuid = i_uuid
-        self.t_name = i_name
-        self.t_type = i_type
-        self.t_note = i_note
-
-    def __repr__(self):
-        return f"Table uuid={self.t_uuid}, name={self.t_name}, note={self.t_note}"
-
-
-class Meta_Column(db.Model):
+class MetaColumn(db.Model):
     __tablename__ = 'meta_column'
     c_uuid = db.Column(db.String(32), primary_key=True)
     c_name = db.Column(db.String(100), nullable=False)

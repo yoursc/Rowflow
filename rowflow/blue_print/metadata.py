@@ -13,10 +13,9 @@
 新增字段、修改字段、删除字段、获取字段列表
 
 """
-from flask import Blueprint, render_template
-from ExtendRegister.database_register import Meta_Table
-
-
+from flask import Blueprint, render_template, request, jsonify
+import controller.metadata as ctrl_metadata
+from rowflow.model.meta_table import meta_table_2_json, meta_table_list_2_json
 
 bp = Blueprint('metadata', __name__)
 
@@ -26,25 +25,53 @@ def index():
     return render_template("metadata.html")
 
 
-@bp.route('table/<tid>', methods=['GET'])
-def table_info(tid: int):
-    print(tid)
-    # todo 获取表信息
-    return ""
+@bp.route('table', methods=['GET'])
+def table_get():
+    t_uuid = request.args['t_uuid']
+    t = ctrl_metadata.table_get_by_uuid(t_uuid)
+    return jsonify({
+        'data': meta_table_2_json(t),
+        'data_type': 'MetaTable',
+        'status': None,
+        'message': None,
+    })
+
+
+@bp.route('table/search', methods=['GET'])
+def table_list():
+    # todo 增加搜索筛选功能
+    tables = ctrl_metadata.table_get_list()
+    print(tables)
+    print(type(tables))
+    return jsonify({
+        'data': meta_table_list_2_json(tables),
+        'data_type': 'list<MetaTable>',
+        'status': None,
+        'message': None,
+    })
 
 
 @bp.route('table', methods=['POST'])
 def table_create():
-    # todo 建表
-    pass
-    return ""
+    msg = ctrl_metadata.table_create(
+        t_name=request.args['t_name'],
+        t_type=request.args['t_type'],
+        t_note=request.args['t_note'],
+    )
+    return jsonify({
+        'status': None,
+        'message': msg,
+    })
 
 
 @bp.route('table', methods=['PUT'])
 def table_update():
     # todo 修改表
     pass
-    return ""
+    return jsonify({
+        'status': None,
+        'message': None,
+    })
 
 
 @bp.route('table', methods=['DELETE'])
@@ -53,13 +80,6 @@ def table_delete():
     pass
     return ""
 
-@bp.route('tables', methods=['GET'])
-def table_list():
-    tables = Meta_Table.query.all()
-    s = ""
-    for l in tables:
-        s += str(l) + "<br>\n"
-    return str(tables)
 
 @bp.route('column', methods=['GET'])
 def table_column_get():

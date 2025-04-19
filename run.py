@@ -32,9 +32,11 @@ def begin():
     # TODO 启动环境判断处理
     # Linux服务器启动
     if platform.system() == 'Linux':
-        app.run(debug=False)
+        deb = False
     else:
-        app.run(debug=True)
+        deb = True
+
+    app.run(debug=deb, port=app.config.get('PORT'))
 
 
 if __name__ == '__main__':

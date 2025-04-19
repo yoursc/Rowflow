@@ -9,6 +9,7 @@
 from flask import Flask
 from configparser import ConfigParser
 import os
+import shutil
 
 # TODO 可指定配置文件
 
@@ -16,12 +17,23 @@ config = ConfigParser()
 
 
 def register_config(app: Flask):
+    # 优先加载测试配置
     if os.path.exists('conf/dev.ini'):
         config.read('conf/dev.ini')
+    # 加载默认配置文件
+    elif os.path.exists('conf/setting.ini'):
+        config.read('conf/setting.ini')
+    # 没有配置文件，复制模版
     else:
-        config.read('conf/default.ini')
-
+        shutil.copyfile('conf/template.ini', 'conf/setting.ini')
+        config.read('conf/setting.ini')
+    set_app(app)
     set_mysql(app)
+
+
+def set_app(app: Flask):
+    APP_PORT: int = int(config.get('APP', 'PORT'))
+    app.config['PORT'] = APP_PORT
 
 
 def set_mysql(app: Flask):

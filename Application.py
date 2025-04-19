@@ -6,7 +6,7 @@
 应用构建器
 """
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template
 from ExtendRegister.config_register import register_config
 from ExtendRegister.blueprint_register import register_blueprint
 from ExtendRegister.database_register import register_database
@@ -14,7 +14,7 @@ from ExtendRegister.database_register import register_database
 
 def create_app() -> Flask:
     # 创建实例
-    app = Flask("rowflow", template_folder='./templates')
+    app = Flask("rowflow", template_folder='../templates')
     # 跨域
     # 注册 CLI
     # 注册 配置

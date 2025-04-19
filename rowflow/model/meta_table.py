@@ -29,10 +29,10 @@ def meta_table_2_json(t: MetaTable):
     return r
 
 
-def meta_table_list_2_json(t: [MetaTable]):
-    if t is None:
+def meta_table_list_2_json(tables: [MetaTable]):
+    if tables is None:
         return None
-    r = []
-    for t in t:
-        r.append(meta_table_2_json(t))
-    return r
+    rs = []
+    for t in tables:
+        rs.append(meta_table_2_json(t))
+    return rs

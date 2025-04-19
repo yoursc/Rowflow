@@ -53,6 +53,7 @@ def table_list():
 
 @bp.route('table', methods=['POST'])
 def table_create():
+    # todo 数据校验
     msg = ctrl_metadata.table_create(
         t_name=request.args['t_name'],
         t_type=request.args['t_type'],
@@ -66,19 +67,28 @@ def table_create():
 
 @bp.route('table', methods=['PUT'])
 def table_update():
-    # todo 修改表
-    pass
+    # todo 数据校验
+    msg = ctrl_metadata.table_update(
+        t_uuid=request.args['t_uuid'],
+        t_name=request.args['t_name'],
+        t_type=request.args['t_type'],
+        t_note=request.args['t_note'],
+    )
     return jsonify({
         'status': None,
-        'message': None,
+        'message': msg,
     })
 
 
 @bp.route('table', methods=['DELETE'])
 def table_delete():
-    # todo 删除表
-    pass
-    return ""
+    # todo 数据校验
+    t_uuid = request.args['t_uuid']
+    msg = ctrl_metadata.table_delete(t_uuid)
+    return jsonify({
+        'status': None,
+        'message': msg,
+    })
 
 
 @bp.route('column', methods=['GET'])

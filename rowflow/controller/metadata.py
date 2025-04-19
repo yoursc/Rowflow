@@ -42,8 +42,47 @@ def table_create(t_name: str, t_type=None, t_note=None):
     return "success"
 
 
-def table_update():
-    pass
+def table_update(t_uuid: str, t_name: str, t_type=None, t_note=None):
+    msg = None
+    try:
+        db.session.begin_nested()
+        t = table_get_by_uuid(t_uuid)
+        if t is None:
+            msg = f"Table not found"
+            raise Exception
+        if t_name is not None:
+            t.t_name = t_name
+        if t_type is not None:
+            t.t_type = t_type
+        if t_note is not None:
+            t.t_note = t_note
+        db.session.commit()
+        msg = "success"
+    except Exception as e:
+        print(e)
+        if msg is None:
+            msg = "error"
+        db.session.rollback()
+    return msg
+
+
+def table_delete(t_uuid: str):
+    msg = None
+    try:
+        db.session.begin_nested()
+        t = table_get_by_uuid(t_uuid)
+        if t is None:
+            msg = f"Table not found"
+            raise Exception
+        db.session.delete(t)
+        db.session.commit()
+        msg = "success"
+    except Exception as e:
+        print(e)
+        if msg is None:
+            msg = "error"
+        db.session.rollback()
+    return msg
 
 
 class Metadata(object):

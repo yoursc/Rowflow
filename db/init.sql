@@ -16,18 +16,19 @@ CREATE TABLE IF NOT EXISTS meta_table
     t_note CHAR(100)
 );
 INSERT INTO meta_table (t_uuid, t_name, t_type, t_note)
-VALUES ('A1A2A3', 'test_table', '123456','this is a test table');
+VALUES ('A1A2A3', 'test_table', '123456', 'this is a test table');
 INSERT INTO meta_table (t_uuid, t_name, t_type, t_note)
-VALUES ('A1A2A6', 'test_table', '123456','this is a test table');
+VALUES ('A1A2A6', 'test_table', '123456', 'this is a test table');
 
 
 DROP TABLE IF EXISTS meta_column;
 CREATE TABLE IF NOT EXISTS meta_column
 (
-    c_uuid CHAR(32) PRIMARY KEY NOT NULL,
+    c_uuid CHAR(37) PRIMARY KEY NOT NULL,
     c_name CHAR(100)            NOT NULL,
     c_type CHAR(100)            NOT NULL,
-    c_note CHAR(100)
+    c_note CHAR(100),
+    t_uuid CHAR(37)             NOT NULL
 );
 
 DROP TABLE IF EXISTS sys_user;

@@ -17,3 +17,24 @@ class MetaColumn(db.Model):
 
     def __repr__(self):
         return f"Column uuid={self.c_uuid}, name={self.c_name}, type={self.c_type}, note={self.c_note}, t_uuid={self.t_uuid}"
+
+
+def meta_column_2_json(c: MetaColumn):
+    if c is None:
+        return None
+    r = {'c_uuid': c.c_uuid,
+         'c_name': c.c_name,
+         'c_type': c.c_type,
+         'c_note': c.c_note,
+         't_uuid': c.t_uuid,
+         }
+    return r
+
+
+def meta_column_list_2_json(columns: list[MetaColumn]):
+    if columns is None:
+        return None
+    rs = []
+    for c in columns:
+        rs.append(meta_column_2_json(c))
+    return rs

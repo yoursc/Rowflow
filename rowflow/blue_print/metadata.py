@@ -16,6 +16,7 @@
 from flask import Blueprint, render_template, request, jsonify
 import controller.metadata as ctrl_metadata
 from rowflow.model.meta_table import meta_table_2_json, meta_table_list_2_json
+from rowflow.model.meta_column import meta_column_2_json, meta_column_list_2_json
 
 bp = Blueprint('metadata', __name__)
 
@@ -93,23 +94,66 @@ def table_delete():
 
 @bp.route('column', methods=['GET'])
 def table_column_get():
-    # todo 获取字段信息
-    return ""
+    c_uuid = request.args['c_uuid']
+    # todo 数据校验
+    c = ctrl_metadata.column_get_by_uuid(c_uuid)
+    return jsonify({
+        'data': meta_column_2_json(c),
+        'type': 'MetaColumn',
+        'status': None,
+        'message': None,
+    })
+
+
+@bp.route('columns', methods=['GET'])
+def table_column_get_list_by_table():
+    # todo 数据校验
+    t_uuid = request.args['t_uuid']
+    cs = ctrl_metadata.column_get_list_by_table(t_uuid)
+    return jsonify({
+        'data': meta_column_list_2_json(cs),
+        'type': 'MetaColumn',
+        'status': None,
+        'message': None,
+    })
 
 
 @bp.route('column', methods=['POST'])
 def table_column_add():
-    # todo 新增字段
-    return ""
+    # todo 数据校验
+    msg = ctrl_metadata.column_create(
+        t_uuid=request.args['t_uuid'],
+        c_name=request.args['c_name'],
+        c_type=request.args['c_type'],
+        c_note=request.args['c_note'],
+    )
+    return jsonify({
+        'status': None,
+        'message': msg,
+    })
 
 
 @bp.route('column', methods=['PUT'])
 def table_column_update():
-    # todo 修改字段
-    return ""
+    # todo 数据校验
+    msg = ctrl_metadata.column_update(
+        c_uuid=request.args['c_uuid'],
+        c_name=request.args['c_name'],
+        c_type=request.args['c_type'],
+        c_note=request.args['c_note'],
+    )
+    return jsonify({
+        'status': None,
+        'message': msg,
+    })
 
 
 @bp.route('column', methods=['DELETE'])
 def table_column_delete():
-    # todo 删除字段
-    return ""
+    c_uuid = request.args['c_uuid']
+    # todo 数据校验
+    msg = ctrl_metadata.column_delete(c_uuid)
+    return jsonify({
+        'status': None,
+        'message': msg,
+    })

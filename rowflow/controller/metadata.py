@@ -5,9 +5,9 @@
 @Date   : 2023-12-21
 元数据管理工具
 """
-import database
 import uuid
 from ExtendRegister.database_register import db
+from rowflow.model.meta_column import MetaColumn
 from rowflow.model.meta_table import MetaTable
 
 
@@ -16,7 +16,7 @@ def table_get_by_uuid(t_uuid: str) -> MetaTable:
     return r
 
 
-def table_get_list() -> [MetaTable]:
+def table_get_list() -> list[MetaTable]:
     r = MetaTable.query.all()
     return r
 
@@ -27,19 +27,24 @@ def table_create(t_name: str, t_type=None, t_note=None):
     e.t_name = t_name
     e.t_type = t_type
     e.t_note = t_note
-    print(e)
-    with db.session.begin_nested():
-        if table_get_by_uuid(e.t_uuid):
-            print('UUID 重复，重新生成')
-            raise Exception
+    msg = None
     try:
+        db.session.begin_nested()
+        if MetaTable.query.get(e.t_uuid) is not None:
+            msg = 'UUID 重复，请重新提交'
+            raise Exception
+        if MetaTable.query.filter(MetaTable.t_name == t_name).first() is not None:
+            msg = 't_name 重复'
+            raise Exception
         db.session.add(e)
         db.session.commit()
+        msg = "success"
     except Exception as e:
         print(e)
         db.session.rollback()
-        return "error"
-    return "success"
+        if msg is None:
+            msg = "error"
+    return msg
 
 
 def table_update(t_uuid: str, t_name: str, t_type=None, t_note=None):
@@ -74,6 +79,7 @@ def table_delete(t_uuid: str):
         if t is None:
             msg = f"Table not found"
             raise Exception
+        # todo 字段清空前，禁止删表
         db.session.delete(t)
         db.session.commit()
         msg = "success"
@@ -85,11 +91,84 @@ def table_delete(t_uuid: str):
     return msg
 
 
-class Metadata(object):
-    def __init__(self):
-        self.db = database.get_connection()
+def column_get_by_uuid(c_uuid: str) -> MetaColumn:
+    r = MetaColumn.query.get(c_uuid)
+    return r
 
-    def get_tables(self):
-        db = self.db
-        self.db.execute("tables")
-        return ""
+
+def column_get_list_by_table(t_uuid: str) -> list[MetaColumn]:
+    cs = MetaColumn.query.filter(MetaColumn.t_uuid == t_uuid).all()
+    return cs
+
+
+def column_create(c_name: str, t_uuid: str, c_type: str = None, c_note: str = None):
+    c = MetaColumn()
+    c.c_uuid = str(uuid.uuid4())
+    c.c_name = c_name
+    c.c_type = c_type
+    c.c_note = c_note
+    c.t_uuid = t_uuid
+    msg = None
+    try:
+        db.session.begin_nested()
+        if MetaTable.query.get(c.t_uuid) is None:
+            msg = '未找到指定表的t_uuid'
+            raise Exception
+        if MetaColumn.query.get(c.c_uuid) is not None:
+            msg = 'UUID 重复，请重新提交'
+            raise Exception
+        if MetaColumn.query.filter(MetaColumn.t_uuid == c.t_uuid, MetaColumn.c_name == c.c_name).first() is not None:
+            msg = 'c_name 重复'
+            raise Exception
+        db.session.add(c)
+        db.session.commit()
+        msg = "success"
+    except Exception as e:
+        print(e)
+        db.session.rollback()
+        if msg is None:
+            msg = "error"
+    return msg
+
+
+def column_update(c_uuid: str, c_name: str = None, c_type: str = None, c_note: str = None):
+    msg = None
+    try:
+        db.session.begin_nested()
+        c = MetaColumn.query.get(c_uuid)
+        if c is None:
+            msg = 'c_uuid not found'
+            raise Exception
+        if c_name is not None:
+            c.c_name = c_name
+        if c_type is not None:
+            c.c_type = c_type
+        if c_note is not None:
+            c.c_note = c_note
+        db.session.commit()
+        msg = "success"
+    except Exception as e:
+        print(e)
+        db.session.rollback()
+        if msg is None:
+            msg = "error"
+    return msg
+
+
+def column_delete(c_uuid: str):
+    msg = None
+    try:
+        db.session.begin_nested()
+        c = MetaColumn.query.get(c_uuid)
+        if c is None:
+            msg = f"Column not found"
+            raise Exception
+        db.session.delete(c)
+        db.session.commit()
+        msg = "success"
+    except Exception as e:
+        print(e)
+        if msg is None:
+            msg = "error"
+        db.session.rollback()
+    return msg

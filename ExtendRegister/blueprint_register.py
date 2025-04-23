@@ -7,11 +7,11 @@
 """
 from flask import Flask
 
-import blue_print.dev as bp_dev
-import blue_print.metadata_table as bp_meta_table
-import blue_print.metadata_column as bp_meta_column
-import blue_print.view as bp_view
-import blue_print.row as bp_row
+import blueprint.dev as bp_dev
+import blueprint.metadata_table as bp_meta_table
+import blueprint.metadata_column as bp_meta_column
+import blueprint.view as bp_view
+import blueprint.row as bp_row
 
 
 def register_blueprint(app: Flask):

@@ -5,56 +5,66 @@
 @Date   : 2023-12-18
 表管理蓝图
 
-表功能计划：
-表：
 新增表、重命名表、删除表、获取所有表列表
-
-字段：
-新增字段、修改字段、删除字段、获取字段列表
-
 """
 from flask import Blueprint, request, jsonify
-import controller.metadata_table as ctrl_metadata
-from rowflow.model.meta_table import meta_table_2_json, meta_table_list_2_json
+import controller.metadata_table as ctrl_meta_tab
+from rowflow.model.metadata_table import tabs2dict
 
 bp = Blueprint('metadata_table', __name__)
 
 
 @bp.route('get', methods=['GET'])
 def table_get():
+    # todo 数据校验
     t_uuid = request.args['t_uuid']
-    t = ctrl_metadata.table_get_by_uuid(t_uuid)
+    table = ctrl_meta_tab.get_tab(t_uuid)
+    if table is None:
+        d, msg = None, "error"
+    else:
+        d = table.get_dict()
+        msg = "success"
     return jsonify({
-        'data': meta_table_2_json(t),
-        'data_type': 'MetaTable',
+        'data': d,
+        'type': 'MetadataTable',
         'status': None,
-        'message': None,
+        'message': msg,
     })
 
 
 @bp.route('search', methods=['GET'])
-def table_list():
+def tables_search():
+    # todo 数据校验
     # todo 增加搜索筛选功能
-    tables = ctrl_metadata.table_get_list()
-    print(tables)
-    print(type(tables))
+    tables = ctrl_meta_tab.table_search()
+    if tables is None:
+        d, msg = None, "error"
+    else:
+        d = tabs2dict(tables)
+        msg = "success"
     return jsonify({
-        'data': meta_table_list_2_json(tables),
-        'data_type': 'list<MetaTable>',
+        'data': d,
+        'type': 'list<MetadataTable>',
         'status': None,
-        'message': None,
+        'message': msg,
     })
 
 
 @bp.route('create', methods=['POST'])
 def table_create():
     # todo 数据校验
-    msg = ctrl_metadata.table_create(
+    table = ctrl_meta_tab.table_create(
         t_name=request.args['t_name'],
         t_type=request.args['t_type'],
         t_note=request.args['t_note'],
     )
+    if table is None:
+        d, msg = None, "error"
+    else:
+        d, msg = table.get_dict(), "success"
     return jsonify({
+        'data': d,
+        'type': 'MetadataTable',
         'status': None,
         'message': msg,
     })
@@ -63,13 +73,19 @@ def table_create():
 @bp.route('update', methods=['PUT'])
 def table_update():
     # todo 数据校验
-    msg = ctrl_metadata.table_update(
+    table = ctrl_meta_tab.table_update(
         t_uuid=request.args['t_uuid'],
         t_name=request.args['t_name'],
         t_type=request.args['t_type'],
         t_note=request.args['t_note'],
     )
+    if table is None:
+        d, msg = None, "error"
+    else:
+        d, msg = table.get_dict(), "success"
     return jsonify({
+        'data': d,
+        'type': 'MetadataTable',
         'status': None,
         'message': msg,
     })
@@ -79,8 +95,14 @@ def table_update():
 def table_delete():
     # todo 数据校验
     t_uuid = request.args['t_uuid']
-    msg = ctrl_metadata.table_delete(t_uuid)
+    table = ctrl_meta_tab.table_delete(t_uuid)
+    if table is None:
+        d, msg = None, "error"
+    else:
+        d, msg = table.get_dict(), "success"
     return jsonify({
+        'data': d,
+        'type': 'MetadataTable',
         'status': None,
         'message': msg,
     })

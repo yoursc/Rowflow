@@ -7,7 +7,7 @@
 from ExtendRegister.database_register import db
 
 
-class MetaColumn(db.Model):
+class MetadataColumn(db.Model):
     __tablename__ = 'meta_column'
     c_uuid = db.Column(db.String(37), primary_key=True)
     c_name = db.Column(db.String(100), nullable=False)
@@ -18,23 +18,23 @@ class MetaColumn(db.Model):
     def __repr__(self):
         return f"Column uuid={self.c_uuid}, name={self.c_name}, type={self.c_type}, note={self.c_note}, t_uuid={self.t_uuid}"
 
-
-def meta_column_2_json(c: MetaColumn):
-    if c is None:
-        return None
-    r = {'c_uuid': c.c_uuid,
-         'c_name': c.c_name,
-         'c_type': c.c_type,
-         'c_note': c.c_note,
-         't_uuid': c.t_uuid,
-         }
-    return r
+    def get_dict(self):
+        r = {'c_uuid': self.c_uuid,
+             'c_name': self.c_name,
+             'c_type': self.c_type,
+             'c_note': self.c_note,
+             't_uuid': self.t_uuid,
+             }
+        return r
 
 
-def meta_column_list_2_json(columns: list[MetaColumn]):
+def cols2dict(columns: list[MetadataColumn]):
+    """
+    字典列表转换
+    """
     if columns is None:
         return None
     rs = []
     for c in columns:
-        rs.append(meta_column_2_json(c))
+        rs.append(c.get_dict())
     return rs

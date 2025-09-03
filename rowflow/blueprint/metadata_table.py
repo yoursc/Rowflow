@@ -32,6 +32,22 @@ def table_get():
     })
 
 
+@bp.route('get_my_table_list', methods=['GET'])
+def get_my_table_list():
+    tables = ctrl_meta_tab.table_search()
+    if tables is None:
+        d, msg = None, "error"
+    else:
+        d = tabs2dict(tables)
+        msg = "success"
+    return jsonify({
+        'data': d,
+        'type': 'list<MetadataTable>',
+        'status': 200,
+        'message': msg,
+    })
+
+
 @bp.route('search', methods=['GET'])
 def tables_search():
     # todo 数据校验

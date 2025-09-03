@@ -15,10 +15,12 @@
 """
 from flask import Blueprint
 
-bp = Blueprint('view', __name__)
+bp = Blueprint('metadata_view', __name__)
 
 
 @bp.route('/create')
 def create_view():
     # todo 创建视图处理
     return ""
+
+# todo 完善视图管理接口及后台处理逻辑

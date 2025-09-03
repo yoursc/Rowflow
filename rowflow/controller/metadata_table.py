@@ -23,7 +23,7 @@ def table_search() -> list[MetadataTable]:
 
 def table_create(t_name: str, t_type=None, t_note=None) -> MetadataTable:
     table = MetadataTable()
-    table.t_uuid = str(uuid.uuid4())
+    table.t_uuid = str(uuid.uuid4()).replace('-', '')[:8]
     table.t_name = t_name
     table.t_type = t_type
     table.t_note = t_note

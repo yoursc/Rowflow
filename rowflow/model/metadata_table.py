@@ -12,16 +12,16 @@ class MetadataTable(db.Model):
     t_uuid = db.Column(db.String(37), primary_key=True)
     t_name = db.Column(db.String(100), nullable=False)
     t_type = db.Column(db.String(100))
-    t_note = db.Column(db.String(100))
+    t_desc = db.Column(db.String(100))
 
     def __repr__(self):
-        return f"Table uuid={self.t_uuid}, name={self.t_name}, type={self.t_type}, note={self.t_note}"
+        return f"Table t_uuid={self.t_uuid}, t_name={self.t_name}, t_type={self.t_type}, t_desc={self.t_desc}"
 
     def get_dict(self):
         r = {'t_uuid': self.t_uuid,
              't_name': self.t_name,
              't_type': self.t_type,
-             't_note': self.t_note
+             't_desc': self.t_desc
              }
         return r
 

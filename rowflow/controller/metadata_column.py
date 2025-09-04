@@ -20,12 +20,12 @@ def get_cols(t_uuid: str) -> list[MetadataColumn]:
     return rs
 
 
-def column_create(c_name: str, t_uuid: str, c_type: str, c_note: str = None):
+def column_create(c_name: str, t_uuid: str, c_type: str, c_desc: str = None):
     column = MetadataColumn()
     column.c_uuid = str(uuid.uuid4())
     column.c_name = c_name
     column.c_type = c_type
-    column.c_note = c_note
+    column.c_desc = c_desc
     column.t_uuid = t_uuid
     try:
         db.session.begin_nested()
@@ -45,7 +45,7 @@ def column_create(c_name: str, t_uuid: str, c_type: str, c_note: str = None):
     return column
 
 
-def column_update(c_uuid: str, c_name: str = None, c_type: str = None, c_note: str = None):
+def column_update(c_uuid: str, c_name: str = None, c_type: str = None, c_desc: str = None):
     try:
         db.session.begin_nested()
         column = MetadataColumn.query.get(c_uuid)
@@ -55,8 +55,8 @@ def column_update(c_uuid: str, c_name: str = None, c_type: str = None, c_note: s
             column.c_name = c_name
         if c_type is not None:
             column.c_type = c_type
-        if c_note is not None:
-            column.c_note = c_note
+        if c_desc is not None:
+            column.c_desc = c_desc
         db.session.commit()
     except Exception as e:
         db.session.rollback()

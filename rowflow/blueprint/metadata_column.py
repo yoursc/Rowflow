@@ -58,7 +58,7 @@ def column_create():
         t_uuid=request.args['t_uuid'],
         c_name=request.args['c_name'],
         c_type=request.args['c_type'],
-        c_note=request.args['c_note'],
+        c_desc=request.args['c_desc'],
     )
     if column is None:
         d, msg = None, "error"
@@ -80,7 +80,7 @@ def table_column_update():
         c_uuid=request.args['c_uuid'],
         c_name=request.args['c_name'],
         c_type=request.args['c_type'],
-        c_note=request.args['c_note'],
+        c_desc=request.args['c_desc'],
     )
     if column is None:
         d, msg = None, "error"

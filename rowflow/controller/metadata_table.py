@@ -21,16 +21,16 @@ def table_search() -> list[MetadataTable]:
     return r
 
 
-def table_create(t_name: str, t_type=None, t_note=None) -> MetadataTable:
+def table_create(t_name: str, t_type=None, t_desc=None) -> MetadataTable:
     table = MetadataTable()
-    table.t_uuid = str(uuid.uuid4()).replace('-', '')[:8]
+    table.t_uuid = 'tab_' + str(uuid.uuid4()).replace('-', '')[:11]
     table.t_name = t_name
     table.t_type = t_type
-    table.t_note = t_note
+    table.t_desc = t_desc
     try:
         db.session.begin_nested()
         if MetadataTable.query.get(table.t_uuid) is not None:
-            raise Exception('UUID 重复，请重新提交')
+            raise Exception('表UUID重复，请重新提交')
         if MetadataTable.query.filter(MetadataTable.t_name == t_name).first() is not None:
             raise Exception('t_name 重复:' + t_name)
         db.session.add(table)
@@ -43,7 +43,7 @@ def table_create(t_name: str, t_type=None, t_note=None) -> MetadataTable:
     return table
 
 
-def table_update(t_uuid: str, t_name: str, t_type=None, t_note=None) -> MetadataTable:
+def table_update(t_uuid: str, t_name: str, t_type=None, t_desc=None) -> MetadataTable:
     try:
         db.session.begin_nested()
         table = MetadataTable.query.get(t_uuid)
@@ -53,8 +53,8 @@ def table_update(t_uuid: str, t_name: str, t_type=None, t_note=None) -> Metadata
             table.t_name = t_name
         if t_type is not None:
             table.t_type = t_type
-        if t_note is not None:
-            table.t_note = t_note
+        if t_desc is not None:
+            table.t_desc = t_desc
         db.session.commit()
     except Exception as e:
         db.session.rollback()

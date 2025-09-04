@@ -15,22 +15,6 @@ import re
 db = SQLAlchemy()
 
 
-class SysConfig(db.Model):
-    __tablename__ = 'sys_config'
-    id = db.Column(db.Integer, primary_key=True)
-    app = db.Column(db.String(100), nullable=False)
-    k = db.Column(db.String(100), nullable=False)
-    v = db.Column(db.String(100))
-
-    def __init__(self, app, k, v):
-        self.app = app
-        self.k = k
-        self.v = v
-
-    def __repr__(self):
-        return f"Sys_Config('{self.app}', '{self.k}', '{self.v}')"
-
-
 def register_database(app: Flask):
     db.init_app(app)
 

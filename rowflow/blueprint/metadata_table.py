@@ -72,7 +72,7 @@ def table_create():
     table = ctrl_meta_tab.table_create(
         t_name=request.args['t_name'],
         t_type=request.args['t_type'],
-        t_note=request.args['t_note'],
+        t_desc=request.args['t_desc'],
     )
     if table is None:
         d, msg = None, "error"
@@ -93,7 +93,7 @@ def table_update():
         t_uuid=request.args['t_uuid'],
         t_name=request.args['t_name'],
         t_type=request.args['t_type'],
-        t_note=request.args['t_note'],
+        t_desc=request.args['t_desc'],
     )
     if table is None:
         d, msg = None, "error"

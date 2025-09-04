@@ -28,6 +28,9 @@ def info():
 def canary():
     return 'App is running now. Your method is ' + request.method
 
+@bp.route('/check_table')
+def check_table():
+    return 'TODO'
 
 @bp.route('/run_init_sql')
 def test():

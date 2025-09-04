@@ -3,76 +3,79 @@
 """
 @Author : Yoursc
 @Date   : 2023-12-21
-元数据管理工具
+元数据表控制层
 """
-import uuid
-from ExtendRegister.database_register import db
-from rowflow.model.metadata_table import MetadataTable
+from model.system import db_session_begin_nested, db_session_rollback, db_session_commit
+from rowflow.dao.ResponseData import ResponseData
+from rowflow.model.metadata_table import MetadataTable, tabs2dict
+import rowflow.model.metadata_table as model_metatab
 
 
-def get_tab(t_uuid: str) -> MetadataTable:
-    r = MetadataTable.query.get(t_uuid)
-    return r
+def get_tab(t_uuid: str) -> ResponseData:
+    rd = ResponseData("search table success", datatype="MetadataTable")
+    try:
+        tab = MetadataTable.query.get(t_uuid)
+        if tab is None:
+            rd.status_code, rd.message = 400, "uuid not found"
+        else:
+            rd.data = tab.get_dict()
+    except Exception:
+        rd.status_code, rd.message = 400, "Unknown error"
+    return rd
 
 
-def table_search() -> list[MetadataTable]:
+def table_search() -> ResponseData:
     # todo 增加搜索筛选功能
-    r = MetadataTable.query.all()
-    return r
-
-
-def table_create(t_name: str, t_type=None, t_desc=None) -> MetadataTable:
-    table = MetadataTable()
-    table.t_uuid = 'tab_' + str(uuid.uuid4()).replace('-', '')[:11]
-    table.t_name = t_name
-    table.t_type = t_type
-    table.t_desc = t_desc
+    rd = ResponseData("get table list success", datatype="list<MetadataTable>")
     try:
-        db.session.begin_nested()
-        if MetadataTable.query.get(table.t_uuid) is not None:
-            raise Exception('表UUID重复，请重新提交')
-        if MetadataTable.query.filter(MetadataTable.t_name == t_name).first() is not None:
-            raise Exception('t_name 重复:' + t_name)
-        db.session.add(table)
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        print(e)
-        table = None
-    # todo 建表后自动创建默认字段
-    return table
+        tabs = MetadataTable.query.all()
+        if tabs is None:
+            rd.message = "Your table list is empty"
+            rd.status_code = 200
+        else:
+            rd.data = tabs2dict(tabs)
+    except Exception:
+        rd.message = "Unknown error"
+        rd.status_code = 404
+    return rd
 
 
-def table_update(t_uuid: str, t_name: str, t_type=None, t_desc=None) -> MetadataTable:
+def table_create(t_name: str, t_type: str, t_desc=None) -> ResponseData:
+    rd = ResponseData(message="create table success", datatype="MetadataTable")
     try:
-        db.session.begin_nested()
-        table = MetadataTable.query.get(t_uuid)
-        if table is None:
-            raise Exception("Table not found")
-        if t_name is not None:
-            table.t_name = t_name
-        if t_type is not None:
-            table.t_type = t_type
-        if t_desc is not None:
-            table.t_desc = t_desc
-        db.session.commit()
+        db_session_begin_nested()
+        tab = model_metatab.table_create(t_name, t_type, t_desc)
+        rd.data = tab.get_dict()
+        # todo 创建数据表、创建默认字段
+        db_session_commit()
     except Exception as e:
-        db.session.rollback()
+        db_session_rollback()
         print(e)
-        table = None
-    return table
+        rd.status_code, rd.message = 400, "Unknown error"
+    return rd
 
 
-def table_delete(t_uuid: str):
+def table_update(t_uuid: str, t_name=None, t_type=None, t_desc=None) -> ResponseData:
+    rd = ResponseData(message="update table success", datatype="MetadataTable")
     try:
-        db.session.begin_nested()
-        table = MetadataTable.query.get(t_uuid)
-        if table is None:
-            raise Exception("Table not found")
-        db.session.delete(table)
-        db.session.commit()
+        db_session_begin_nested()
+        table = model_metatab.table_update(t_uuid, t_name, t_type, t_desc)
+        rd.data = table.get_dict()
     except Exception as e:
-        db.session.rollback()
+        db_session_rollback()
         print(e)
-        table = None
-    return table
+        rd.status_code, rd.message = 400, "Unknown error"
+    return rd
+
+
+def table_delete(t_uuid: str) -> ResponseData:
+    rd = ResponseData(message="Delete table success")
+    try:
+        db_session_begin_nested()
+        model_metatab.table_delete(t_uuid)
+        # todo 删去列字段，删除原表
+        db_session_commit()
+    except Exception as e:
+        db_session_rollback()
+        rd.status_code, rd.message = 400, "Unknown error.\n" + str(e)
+    return rd

@@ -9,7 +9,7 @@
 """
 
 from flask import Blueprint, render_template, request
-from ExtendRegister.database_register import sql_batch_runner
+from rowflow.model.system import sql_batch_runner
 
 bp = Blueprint('dev', __name__)
 
